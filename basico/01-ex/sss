@@ -1,0 +1,3 @@
+gcc capturar_video.c -o capturar_video \
+  `pkg-config --cflags --libs libavdevice libavformat libavcodec libavutil`
+
