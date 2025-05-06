@@ -26,8 +26,28 @@ compile_commands.json:
 free:
 	$(MAKE_CMD) $@
 
+ldd:
+	$(MAKE_CMD) $@
+
+checklib-device:
+	$(MAKE_CMD) checklib LIB=libav$(subst checklib-,,$(@))
+checklib-format:
+	$(MAKE_CMD) checklib LIB=libav$(subst checklib-,,$(@))
+checklib-codec:
+	$(MAKE_CMD) checklib LIB=libav$(subst checklib-,,$(@))
+checklib-util:
+	$(MAKE_CMD) checklib LIB=libav$(subst checklib-,,$(@))
+checklib-device:
+	$(MAKE_CMD) checklib LIB=libav$(subst checklib-,,$(@))
+checklib-swscale:
+	$(MAKE_CMD) checklib LIB=lib$(subst checklib-,,$(@))
+
 # lista devices
 devices:
+	$(MAKE_CMD) ls$@
+
+# lista formats
+formats:
 	$(MAKE_CMD) ls$@
 
 # Target para limpeza dos arquivos gerados

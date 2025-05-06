@@ -15,6 +15,14 @@ MAKNAM = vide4linux.mak
 
 # ****************************************************************************
 # *                                                                          *
+# * TOOLS                                                                    *
+# *                                                                          *
+# ****************************************************************************
+
+LDD = ldd
+
+# ****************************************************************************
+# *                                                                          *
 # *  Define the directories in which to search for library files.            *
 # *                                                                          *
 # ****************************************************************************
@@ -77,7 +85,7 @@ EXE    = capturar_video.exe
 
 PKG_CONFIG_PATH:=/usr/lib/x86_64-linux-gnu/pkgconfig
 export PKG_CONFIG_PATH
-FFMPEG_LIBS   = libavformat libavcodec libavutil libswscale lavdevice
+FFMPEG_LIBS   = libavformat libavcodec libavutil libswscale libavdevice
 FFMPEG_CFLAGS = $(shell /usr/bin/pkg-config --cflags $(FFMPEG_LIBS))
 FFMPEG_LDLIBS = $(shell /usr/bin/pkg-config --libs $(FFMPEG_LIBS))
 
@@ -118,11 +126,23 @@ run: $(EXE)
 free: $(EXE)
 	valgrind --leak-check=full ./$(EXE)
 
+lsformats:
+	$(FFMPEG) -f v4l2 -list_formats all -i /dev/video0
+
 lsdevices:
 	$(FFMPEG) -devices | grep v4l2
 
 bear:
 	$@ -- make -f $(MAKNAM) $(EXE)
+
+# Alvo para verificar se o binário está linkado com libavdevice/libavformat/etc
+ldd:
+	$(LDD) $(EXE)
+
+# Alvo que aceita argumento, por exemplo:
+# make -f vide4linux.mak checklib LIB=avdevice
+checklib:
+	@$(LDD) $(EXE) | grep $(LIB) || echo "❌ $(LIB) não encontrado"
 
 clean:
 	-rm $(EXE)
