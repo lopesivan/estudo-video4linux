@@ -5,14 +5,12 @@
 
 int main()
 {
-    avdevice_register_all();
-
     AVFormatContext *input_ctx = NULL;
     AVFormatContext *output_ctx = NULL;
     AVPacket pkt;
 
     // Define dispositivo e formato (ajuste conforme sua distro/câmera)
-    AVInputFormat *input_format = av_find_input_format("v4l2");
+    const AVInputFormat *input_format = av_find_input_format("v4l2");
     if (!input_format)
     {
         fprintf(stderr, "Formato de entrada v4l2 não encontrado.\n");
@@ -53,8 +51,11 @@ int main()
         }
     }
 
-    avformat_write_header(output_ctx, NULL);
-
+    if (avformat_write_header(output_ctx, NULL) < 0)
+    {
+        fprintf(stderr, "Erro ao escrever cabeçalho de saída.\n");
+        return 1;
+    }
     // Captura por 10 segundos
     int64_t start_time = av_gettime();
     while (av_gettime() - start_time < 10 * AV_TIME_BASE)
